@@ -99,6 +99,25 @@ class Scanner {
                     while (peek() != '\n' && !isAtEnd()) {
                         advance();
                     }
+                } else if (match('*')) {
+                    int nest = 0;
+                    while (!isAtEnd()) {
+                        if (peek() == '*' && peekNext() == '/') {
+                            advance();
+                            advance();
+                            if (nest == 0) {
+                                break;
+                            } else {
+                                nest--;
+                            }
+                        } else if (peek() == '/' && peekNext() == '*') {
+                            advance();
+                            advance();
+                            nest++;
+                        } else {
+                            advance();
+                        }
+                    }
                 } else {
                     addToken(SLASH);
                 }
