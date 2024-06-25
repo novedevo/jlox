@@ -91,11 +91,57 @@ class Scanner {
                 line++;
                 break;
 
+            case '"':
+                string();
+                break;
+
             default:
+                if (isDigit(c)) {
+                    number();
+                } else {
                 Lox.error(line, "Unexpected character.");
+                }
                 // todo: don't spam the user with a billion errors if there's a lot of them in a
                 // row
                 break;
+        }
+    }
+
+    private void number() {
+        while (isDigit(peek())) {
+            advance();
+        }
+
+        // look for a fractional part
+        if (peek() == '.' && isDigit(peekNext())) {
+            // consume the .
+            advance();
+
+            while (isDigit(peek())) {
+                advance();
+            }
+        }
+
+        addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
+    }
+
+    private void string() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') {
+                line++;
+            }
+            advance();
+        }
+
+        if (isAtEnd()) {
+            Lox.error(line, "Unterminated string.");
+            return;
+        } else {
+            // the closing "
+            advance();
+            // trim surrounding quotes
+            String value = source.substring(start + 1, current - 1);
+            addToken(STRING, value);
         }
     }
 
@@ -116,6 +162,18 @@ class Scanner {
         } else {
             return source.charAt(current);
         }
+    }
+
+    private char peekNext() {
+        if (current + 1 >= source.length()) {
+            return '\0';
+        } else {
+            return source.charAt(current + 1);
+        }
+    }
+
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
     }
 
     private boolean isAtEnd() {
