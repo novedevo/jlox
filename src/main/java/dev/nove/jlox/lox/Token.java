@@ -1,4 +1,4 @@
-package dev.nove.jlox;
+package dev.nove.jlox.lox;
 
 class Token {
     final TokenType type;

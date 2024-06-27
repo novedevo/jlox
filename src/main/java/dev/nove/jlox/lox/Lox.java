@@ -1,4 +1,4 @@
-package dev.nove.jlox;
+package dev.nove.jlox.lox;
 
 import java.io.BufferedReader;
 import java.io.IOException;
