@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AstPrinter",
+            "request": "launch",
+            "mainClass": "dev.nove.jlox.lox.AstPrinter",
+            "projectName": "jlox"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
