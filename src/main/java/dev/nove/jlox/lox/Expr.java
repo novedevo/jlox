@@ -6,6 +6,8 @@ abstract class Expr {
     interface Visitor<R> {
         R visitBinaryExpr(Binary expr);
 
+        R visitTernaryExpr(Ternary expr);
+
         R visitGroupingExpr(Grouping expr);
 
         R visitLiteralExpr(Literal expr);
@@ -29,6 +31,23 @@ abstract class Expr {
         final Expr left;
         final Token operator;
         final Expr right;
+    }
+
+    static class Ternary extends Expr {
+        Ternary(Expr condition, Expr ifTrue, Expr ifFalse) {
+            this.condition = condition;
+            this.ifTrue = ifTrue;
+            this.ifFalse = ifFalse;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitTernaryExpr(this);
+        }
+
+        final Expr condition;
+        final Expr ifTrue;
+        final Expr ifFalse;
     }
 
     static class Grouping extends Expr {

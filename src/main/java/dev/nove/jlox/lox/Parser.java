@@ -28,12 +28,26 @@ class Parser {
     }
 
     private Expr sequencer() {
-        Expr expr = equality();
+        Expr expr = ternary();
 
         while (match(COMMA)) {
             Token operator = previous();
-            Expr right = equality();
+            Expr right = ternary();
             expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    // don't really know if this works right
+    private Expr ternary() {
+        Expr expr = equality();
+
+        if (match(QUESTION_MARK)) {
+            Expr ifTrue = ternary();
+            consume(COLON, "expect colon to complete ternary expression");
+            Expr ifFalse = ternary();
+            expr = new Expr.Ternary(expr, ifTrue, ifFalse);
         }
 
         return expr;
