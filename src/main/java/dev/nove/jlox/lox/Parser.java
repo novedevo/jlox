@@ -24,6 +24,10 @@ class Parser {
     }
 
     private Expr expression() {
+        if (match(BANG_EQUAL, EQUAL_EQUAL, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, PLUS, SLASH, STAR)) {
+            Expr right = expression();
+            error(previous(), "expressions cannot start with this operator");
+        }
         return sequencer();
     }
 
