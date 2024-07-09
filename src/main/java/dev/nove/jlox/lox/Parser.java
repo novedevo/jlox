@@ -1,5 +1,6 @@
 package dev.nove.jlox.lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static dev.nove.jlox.lox.TokenType.*;
@@ -15,12 +16,13 @@ class Parser {
         this.tokens = tokens;
     }
 
-    Expr parse() {
-        try {
-            return expression();
-        } catch (ParseError error) {
-            return null;
+    List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+        while (!isAtEnd()) {
+            statements.add(statement());
         }
+
+        return statements;
     }
 
     private Expr expression() {
@@ -29,6 +31,27 @@ class Parser {
             error(previous(), "expressions cannot start with this operator");
         }
         return sequencer();
+    }
+
+    private Stmt statement() {
+        if (match(PRINT)) {
+            return printStatement();
+        } else {
+            return expressionStatement();
+        }
+    }
+
+    private Stmt printStatement() {
+        Expr value = expression();
+        consume(SEMICOLON, "Expect ';' after value.");
+        return new Stmt.Print(value);
+    }
+
+    private Stmt expressionStatement() {
+        Expr expr = expression();
+        consume(SEMICOLON, "Expect ';' after expression.");
+
+        return new Stmt.Expression(expr);
     }
 
     private Expr sequencer() {
